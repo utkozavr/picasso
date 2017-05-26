@@ -17,14 +17,23 @@ package com.squareup.picasso;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.media.MediaCodec;
+import android.media.MediaFormat;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -162,6 +171,121 @@ class BitmapHunter implements Runnable {
       }
       return bitmap;
     }
+  }
+
+  Bitmap decode(byte [] data){
+
+    int H = 1080;
+    int W = 1920;
+/*
+    MediaFormat f = MediaFormat.createVideoFormat("video/avc", W, H);
+
+    boolean eosReceived = false;
+    try {
+      String mime = f.getString(MediaFormat.KEY_MIME);
+      mDecoder = MediaCodec.createDecoderByType(mime);
+      try {
+        mDecoder.configure(f, null, null, 0 );
+
+      } catch (IllegalStateException e) {
+        Log.e(TAG, "codec '" + mime + "' failed configuration. " + e);
+        return false;
+      }
+
+      mDecoder.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+    ByteBuffer[] inputBuffers = mDecoder.getInputBuffers();
+    ByteBuffer[] outBuffers = mDecoder.getOutputBuffers();
+    mDecoder.getOutputBuffers();
+
+    boolean isInput = true;
+    boolean first = false;
+    long startWhen = 0;
+    boolean isFrame = true;
+    while (!eosReceived) {
+      if (isInput) {
+
+
+        int inputIndex = mDecoder.dequeueInputBuffer(10000);
+        if (inputIndex >= 0) {
+          // fill inputBuffers[inputBufferIndex] with valid data
+          ByteBuffer inputBuffer = inputBuffers[inputIndex];
+
+          inputBuffer.clear();
+          inputBuffer.put(sampleIn);
+          mDecoder.queueInputBuffer(inputIndex, 0, sampleIn.length, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+          isInput = false;
+
+        }
+
+      }
+
+      int outIndex = mDecoder.dequeueOutputBuffer(info, 10000);
+      switch (outIndex) {
+        case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
+          Log.d(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");
+          outBuffers = mDecoder.getOutputBuffers();
+          break;
+
+        case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
+          Log.d(TAG, "INFO_OUTPUT_FORMAT_CHANGED format : " + mDecoder.getOutputFormat());
+          break;
+
+        case MediaCodec.INFO_TRY_AGAIN_LATER:
+//				Log.d(TAG, "INFO_TRY_AGAIN_LATER");
+          break;
+
+        default:
+          if (!first) {
+            startWhen = System.currentTimeMillis();
+            first = true;
+          }
+          try {
+            long sleepTime = (info.presentationTimeUs / 1000) - (System.currentTimeMillis() - startWhen);
+            Log.d(TAG, "info.presentationTimeUs : " + (info.presentationTimeUs / 1000) + " playTime: " + (System.currentTimeMillis() - startWhen) + " sleepTime : " + sleepTime);
+
+            if (sleepTime > 0)
+              Thread.sleep(sleepTime);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+
+          ByteBuffer buffer = outBuffers[outIndex]; //The bytebuffer i want to convert to bitmap
+          buffer.position(info.offset);
+          buffer.limit(info.offset + info.size);
+          sampleOut = new byte[buffer.remaining()]; //converting bytebuffer to byte array
+          buffer.get(sampleOut);
+
+          // I have to convert the byte array to a bitmap. So I'm doing this :
+
+          YuvImage yuvimage = new YuvImage(sampleOut, ImageFormat.NV21, 1280, 720, null);
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          yuvimage.compressToJpeg(new Rect(0, 0, 1280, 720), 50, baos);
+          byte[] jdata = baos.toByteArray();
+          img = BitmapFactory.decodeByteArray(jdata, 0, jdata.length);
+
+
+
+          mDecoder.releaseOutputBuffer(outIndex, true);
+          break;
+      }
+
+      // All decoded frames have been rendered, we can stop playing now
+      if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+        Log.d(TAG, "OutputBuffer BUFFER_FLAG_END_OF_STREAM");
+        break;
+      }
+    }
+
+    mDecoder.stop();
+    mDecoder.release();
+        */
+    return null;
   }
 
   @Override public void run() {

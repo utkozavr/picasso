@@ -1,1 +1,3 @@
-<manifest package="com.squareup.picasso"/>
+<manifest package="com.squareup.picasso"  xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="19"/>
+</manifest>
